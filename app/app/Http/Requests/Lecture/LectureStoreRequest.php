@@ -25,7 +25,7 @@ class LectureStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'topic' => 'required',
+            'topic' => 'required|max:255',
             'description' => 'required'
         ];
     }

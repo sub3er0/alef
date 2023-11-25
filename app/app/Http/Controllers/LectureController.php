@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Lecture\LectureStoreRequest;
 use App\Http\Requests\Lecture\LectureUpdateRequest;
+use App\Http\Services\Lecture\LectureService;
 use App\Models\Grade;
 use App\Models\Lecture;
 use App\Models\Student;
@@ -24,87 +25,32 @@ class LectureController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(LectureStoreRequest $request)
+    public function store(LectureStoreRequest $request, LectureService $service)
     {
-        try {
-            $lecture = new Lecture();
-            $lecture->fill($request->all());
-            $lecture->save();
-            return $lecture->toArray();
-        } catch (\Exception $e) {
-            return [
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
-        }
+        return $service->save($request);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Lecture $lecture)
+    public function show(Lecture $lecture, LectureService $service)
     {
-        try {
-            $lectureData = $lecture->toArray();
-            $grades = $lecture->grade()?->get();
-            $gradesData = [];
-            $studentsData = [];
-            /** @var Grade $grade */
-            foreach ($grades as $grade) {
-                $students = $grade->students()?->get();
-                /** @var Student $student */
-                foreach ($students as $student) {
-                    $studentData = $student->toArray();
-                    $studentsData[$studentData['id']] = $studentData;
-                }
-                $gradeData = $grade->toArray();
-                $gradesData[$gradeData['id']] = $gradeData;
-            }
-            $lectureData['grades'] = array_values($gradesData);
-            $lectureData['students'] = array_values($studentsData);
-            return $lectureData;
-        } catch (\Exception $e) {
-            return [
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
-        }
+        return $service->getLectureData($lecture);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(LectureUpdateRequest $request, Lecture $lecture)
+    public function update(LectureUpdateRequest $request, Lecture $lecture, LectureService $service)
     {
-        try {
-            if ($lecture->id) {
-                $lecture->fill($request->all());
-                $lecture->update();
-                return $lecture->toArray();
-            }
-        } catch (\Exception $e) {
-            return ['error' => true, 'message' => $e->getMessage()];
-        }
+        return $service->update($request, $lecture);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Lecture $lecture)
+    public function destroy(Lecture $lecture, LectureService $service)
     {
-        try {
-            if (isset($lecture->id)) {
-                $lecture->delete();
-                return [
-                    'result' => true
-                ];
-            }
-        } catch (\Exception $e) {
-            return [
-                'result' => false,
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
-        }
+        return $service->delete($lecture);
     }
 }
