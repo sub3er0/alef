@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StudentsRequest;
+use App\Http\Requests\Student\StudentStoreRequest;
+use App\Http\Requests\Student\StudentUpdateRequest;
+use App\Models\Grade;
+use App\Models\Lecture;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -18,17 +23,10 @@ class StudentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-    }
-
-    /**
-     * @param StudentsRequest $request
+     * @param StudentStoreRequest $request
      * @return array
      */
-    public function store(StudentsRequest $request)
+    public function store(StudentStoreRequest $request)
     {
         try {
             $student = new Student();
@@ -46,30 +44,42 @@ class StudentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Student $student)
+    public function show(Request $student)
     {
-        return $student->toArray();
-    }
+        /** @var Grade $grade */
+        $grade = $student->grade()->first();
+        $lecturesData = [];
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Student $student)
-    {
-        $a= 1;
-        //
+        if ($grade->id) {
+            $lectures = $grade->lecture()?->get();
+            /** @var Lecture $lecture */
+            foreach ($lectures as $lecture) {
+                $lecturesData[] = $lecture->toArray();
+            }
+        }
+        $studentData = $student->toArray();
+        $studentData['lectures'] = $lecturesData;
+        return $studentData;
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Student $student)
+    public function update(StudentUpdateRequest $request, Student $student)
     {
-        if (isset($student->id)) {
-            $student->fill($request->all());
-            $student->save();
-            return $student->toArray();
+        try {
+            if (isset($student->id)) {
+                $student->fill($request->all());
+                $student->save();
+                return $student->toArray();
+            }
+        } catch (\Exception $e) {
+            return [
+                'error' => true,
+                'message' => $e->getMessage()
+            ];
         }
+
     }
 
     /**
@@ -77,8 +87,19 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        if (isset($student->id)) {
-            $student->delete();
+        try {
+            if (isset($student->id)) {
+                $student->delete();
+                return [
+                    'result' => true
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'result' => false,
+                'error' => true,
+                'message' => $e->getMessage()
+            ];
         }
     }
 }

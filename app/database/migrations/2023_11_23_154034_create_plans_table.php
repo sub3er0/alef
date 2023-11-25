@@ -17,8 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('lecture_id');
             $table->foreign('grade_id')->references('id')->on('grades');
             $table->foreign('lecture_id')->references('id')->on('lectures');
-            $table->integer('priority')->unique();
+            $table->integer('priority');
             $table->unique(['grade_id', 'lecture_id']);
+            $table->unique(['grade_id', 'priority']);
             $table->timestamps();
         });
     }

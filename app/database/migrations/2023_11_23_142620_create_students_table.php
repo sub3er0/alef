@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->unsignedBigInteger('grade_id');
+            $table->unsignedBigInteger('grade_id')->nullable();
             $table->foreign('grade_id')->references('id')->on('grades');
             $table->timestamps();
         });
