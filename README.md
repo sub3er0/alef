@@ -1,6 +1,6 @@
 Инструкция по разворачиванию проекта
 
-1. Клонировать проект с репозитория git clone https://github.com/sub3er0/pixel.git .
+1. Клонировать проект с репозитория git clone https://github.com/sub3er0/alef.git .
 2. Установить laravel (cd app) composer create-project --prefer-dist laravel/laravel .
 3. docker compose up -d
 4. sudo chmod -R 777 . из корня проекта
