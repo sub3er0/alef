@@ -10,8 +10,15 @@ use App\Models\Grade;
 use App\Models\Student;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * GradeService
+ */
 class GradeService
 {
+    /**
+     * @param GradeStoreRequest $request
+     * @return array
+     */
     public function save(GradeStoreRequest $request)
     {
         try {
@@ -27,6 +34,10 @@ class GradeService
         }
     }
 
+    /**
+     * @param Grade $grade
+     * @return array|void
+     */
     public function getGradeData(Grade $grade)
     {
         try {
@@ -40,6 +51,11 @@ class GradeService
         }
     }
 
+    /**
+     * @param GradeUpdateRequest $request
+     * @param Grade $grade
+     * @return array|void
+     */
     public function update(GradeUpdateRequest $request, Grade $grade)
     {
         try {
@@ -53,6 +69,10 @@ class GradeService
         }
     }
 
+    /**
+     * @param Grade $grade
+     * @return array|true[]|void
+     */
     public function delete(Grade $grade){
         try {
             if (isset($grade->id)) {

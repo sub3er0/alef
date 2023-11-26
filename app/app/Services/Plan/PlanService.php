@@ -7,8 +7,15 @@ namespace App\Http\Services\Plan;
 use App\Models\Grade;
 use App\Models\Plan;
 
+/**
+ * PlanService
+ */
 class PlanService
 {
+    /**
+     * @param Grade $grade
+     * @return array|mixed[]|void
+     */
     public function getLectures(Grade $grade)
     {
         try {

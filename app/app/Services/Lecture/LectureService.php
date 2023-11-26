@@ -10,8 +10,15 @@ use App\Models\Grade;
 use App\Models\Lecture;
 use App\Models\Student;
 
+/**
+ * LectureService
+ */
 class LectureService
 {
+    /**
+     * @param LectureStoreRequest $request
+     * @return array
+     */
     public function save(LectureStoreRequest $request)
     {
         try {
@@ -27,6 +34,10 @@ class LectureService
         }
     }
 
+    /**
+     * @param Lecture $lecture
+     * @return array
+     */
     public function getLectureData(Lecture $lecture)
     {
         try {
@@ -56,6 +67,11 @@ class LectureService
         }
     }
 
+    /**
+     * @param LectureUpdateRequest $request
+     * @param Lecture $lecture
+     * @return array|void
+     */
     public function update(LectureUpdateRequest $request, Lecture $lecture)
     {
         try {
@@ -69,6 +85,10 @@ class LectureService
         }
     }
 
+    /**
+     * @param Lecture $lecture
+     * @return array|true[]|void
+     */
     public function delete(Lecture $lecture)
     {
         try {
@@ -86,5 +106,4 @@ class LectureService
             ];
         }
     }
-
 }
