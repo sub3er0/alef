@@ -9,12 +9,18 @@ use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * PlanController
+ */
 class PlanController extends Controller
 {
     /**
      * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return array
      */
-    public function store(Request $request)
+    public function store(Request $request): array
     {
         try {
             $planData = $request->get('plan');
@@ -34,8 +40,12 @@ class PlanController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param Grade $grade
+     * @return array
      */
-    public function update(Request $request, Grade $grade)
+    public function update(Request $request, Grade $grade): array
     {
         try {
             if (isset($grade->id)) {
@@ -51,6 +61,7 @@ class PlanController extends Controller
                 );
                 return $request->get('plan');
             }
+            return ['error' => true, 'message' => 'Нет класса с заданным id'];
         } catch (\Exception $e) {
             return [
                 'error' => true,

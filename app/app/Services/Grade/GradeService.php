@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Services\Grade;
+namespace App\Services\Grade;
 
 use App\Http\Requests\Grade\GradeStoreRequest;
 use App\Http\Requests\Grade\GradeUpdateRequest;
@@ -19,7 +19,7 @@ class GradeService
      * @param GradeStoreRequest $request
      * @return array
      */
-    public function save(GradeStoreRequest $request)
+    public function save(GradeStoreRequest $request): array
     {
         try {
             $grade = new Grade();
@@ -36,9 +36,9 @@ class GradeService
 
     /**
      * @param Grade $grade
-     * @return array|void
+     * @return array
      */
-    public function getGradeData(Grade $grade)
+    public function getGradeData(Grade $grade): array
     {
         try {
             if ($grade->id) {
@@ -46,6 +46,7 @@ class GradeService
                 $gradeData['students'] = $grade->students()->get()->toArray();
                 return $gradeData;
             }
+            return ['error' => true, 'message' => 'Нет класса с заданным id'];
         } catch (\Exception $e) {
             return ['error' => true, 'message' => $e->getMessage()];
         }
@@ -54,9 +55,9 @@ class GradeService
     /**
      * @param GradeUpdateRequest $request
      * @param Grade $grade
-     * @return array|void
+     * @return array
      */
-    public function update(GradeUpdateRequest $request, Grade $grade)
+    public function update(GradeUpdateRequest $request, Grade $grade): array
     {
         try {
             if (isset($grade->id)) {
@@ -64,6 +65,7 @@ class GradeService
                 $grade->save();
                 return $grade->toArray();
             }
+            return ['error' => true, 'message' => 'Нет класса с заданным id'];
         } catch (\Exception $e) {
             return ['error' => true, 'message' => $e->getMessage()];
         }
@@ -71,9 +73,10 @@ class GradeService
 
     /**
      * @param Grade $grade
-     * @return array|true[]|void
+     * @return array
      */
-    public function delete(Grade $grade){
+    public function delete(Grade $grade): array
+    {
         try {
             if (isset($grade->id)) {
                 DB::transaction(function() use ($grade){
@@ -91,6 +94,7 @@ class GradeService
                     'result' => true
                 ];
             }
+            return ['error' => true, 'message' => 'Нет класса с заданным id'];
         } catch (\Exception $e) {
             return [
                 'result' => false,

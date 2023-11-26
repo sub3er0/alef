@@ -6,10 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Student\StudentStoreRequest;
 use App\Http\Requests\Student\StudentUpdateRequest;
-use App\Models\Grade;
-use App\Models\Lecture;
+use App\Services\Student\StudentService;
 use App\Models\Student;
-use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
@@ -24,82 +22,35 @@ class StudentController extends Controller
 
     /**
      * @param StudentStoreRequest $request
+     * @param StudentService $service
      * @return array
      */
-    public function store(StudentStoreRequest $request)
+    public function store(StudentStoreRequest $request, StudentService $service)
     {
-        try {
-            $student = new Student();
-            $student->fill($request->all());
-            $student->save();
-            return $student->toArray();
-        } catch (\Exception $e) {
-            return [
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
-        }
+        return $service->save($request);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $student)
+    public function show(Student $student, StudentService $service)
     {
-        /** @var Grade $grade */
-        $grade = $student->grade()->first();
-        $lecturesData = [];
-
-        if ($grade->id) {
-            $lectures = $grade->lecture()?->get();
-            /** @var Lecture $lecture */
-            foreach ($lectures as $lecture) {
-                $lecturesData[] = $lecture->toArray();
-            }
-        }
-        $studentData = $student->toArray();
-        $studentData['lectures'] = $lecturesData;
-        return $studentData;
+        return $service->getStudentData($student);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(StudentUpdateRequest $request, Student $student)
+    public function update(StudentUpdateRequest $request, Student $student, StudentService $service)
     {
-        try {
-            if (isset($student->id)) {
-                $student->fill($request->all());
-                $student->save();
-                return $student->toArray();
-            }
-        } catch (\Exception $e) {
-            return [
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
-        }
-
+        return $service->update($request, $student);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Student $student)
+    public function destroy(Student $student, StudentService $service)
     {
-        try {
-            if (isset($student->id)) {
-                $student->delete();
-                return [
-                    'result' => true
-                ];
-            }
-        } catch (\Exception $e) {
-            return [
-                'result' => false,
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
-        }
+        return $service->delete($student);
     }
 }

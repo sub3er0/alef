@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Services\Lecture;
+namespace App\Services\Lecture;
 
 use App\Http\Requests\Lecture\LectureStoreRequest;
 use App\Http\Requests\Lecture\LectureUpdateRequest;
@@ -19,7 +19,7 @@ class LectureService
      * @param LectureStoreRequest $request
      * @return array
      */
-    public function save(LectureStoreRequest $request)
+    public function save(LectureStoreRequest $request): array
     {
         try {
             $lecture = new Lecture();
@@ -38,7 +38,7 @@ class LectureService
      * @param Lecture $lecture
      * @return array
      */
-    public function getLectureData(Lecture $lecture)
+    public function getLectureData(Lecture $lecture): array
     {
         try {
             $lectureData = $lecture->toArray();
@@ -70,9 +70,9 @@ class LectureService
     /**
      * @param LectureUpdateRequest $request
      * @param Lecture $lecture
-     * @return array|void
+     * @return array
      */
-    public function update(LectureUpdateRequest $request, Lecture $lecture)
+    public function update(LectureUpdateRequest $request, Lecture $lecture): array
     {
         try {
             if ($lecture->id) {
@@ -80,6 +80,7 @@ class LectureService
                 $lecture->update();
                 return $lecture->toArray();
             }
+            return ['error' => true, 'message' => 'Нет лекции с заданным id'];
         } catch (\Exception $e) {
             return ['error' => true, 'message' => $e->getMessage()];
         }
@@ -87,9 +88,9 @@ class LectureService
 
     /**
      * @param Lecture $lecture
-     * @return array|true[]|void
+     * @return array
      */
-    public function delete(Lecture $lecture)
+    public function delete(Lecture $lecture): array
     {
         try {
             if (isset($lecture->id)) {
@@ -98,6 +99,7 @@ class LectureService
                     'result' => true
                 ];
             }
+            return ['error' => true, 'message' => 'Нет лекции с заданным id'];
         } catch (\Exception $e) {
             return [
                 'result' => false,

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Services\Student;
+namespace App\Services\Student;
 
 use App\Http\Requests\Student\StudentStoreRequest;
 use App\Http\Requests\Student\StudentUpdateRequest;
@@ -19,7 +19,7 @@ class StudentService
      * @param StudentStoreRequest $request
      * @return array
      */
-    public function save(StudentStoreRequest $request)
+    public function save(StudentStoreRequest $request): array
     {
         try {
             $gradeId = $request->get('grade_id');
@@ -45,7 +45,7 @@ class StudentService
      * @param Student $student
      * @return array
      */
-    public function getStudentData(Student $student)
+    public function getStudentData(Student $student): array
     {
         /** @var Grade $grade */
         $grade = $student->grade()->first();
@@ -68,7 +68,7 @@ class StudentService
      * @param Student $student
      * @return array|void
      */
-    public function update(StudentUpdateRequest $request, Student $student)
+    public function update(StudentUpdateRequest $request, Student $student): array
     {
         try {
             if (isset($student->id)) {
@@ -88,7 +88,7 @@ class StudentService
      * @param Student $student
      * @return array|true[]|void
      */
-    public function delete(Student $student)
+    public function delete(Student $student): array
     {
         try {
             if (isset($student->id)) {

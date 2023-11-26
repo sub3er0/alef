@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Services\Plan;
+namespace App\Services\Plan;
 
 use App\Models\Grade;
 use App\Models\Plan;
@@ -16,7 +16,7 @@ class PlanService
      * @param Grade $grade
      * @return array|mixed[]|void
      */
-    public function getLectures(Grade $grade)
+    public function getLectures(Grade $grade): array
     {
         try {
             if ($grade->id) {

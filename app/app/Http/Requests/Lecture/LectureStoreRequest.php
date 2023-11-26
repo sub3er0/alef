@@ -5,8 +5,10 @@ namespace App\Http\Requests\Lecture;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Request;
 
+/**
+ * LectureStoreRequest
+ */
 class LectureStoreRequest extends FormRequest
 {
     /**

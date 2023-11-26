@@ -5,8 +5,10 @@ namespace App\Http\Requests\Grade;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Request;
 
+/**
+ * GradeStoreRequest
+ */
 class GradeStoreRequest extends FormRequest
 {
     /**

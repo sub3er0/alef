@@ -7,6 +7,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 
+/**
+ * LectureUpdateRequest
+ */
 class LectureUpdateRequest extends FormRequest
 {
     /**

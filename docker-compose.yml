@@ -43,7 +43,7 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
     ports:
-      - "9000:9000"
+      - "9001:9000"
     working_dir: /var/www
     networks:
       - alef
