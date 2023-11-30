@@ -1,13 +1,11 @@
 <?php
 
-use App\Http\Controllers\GradeController;
-use App\Http\Controllers\LectureController;
-use App\Http\Controllers\PlanController;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\TestController;
+use App\Http\Controllers\V1\Grade\GradeController;
+use App\Http\Controllers\V1\Lecture\LectureController;
+use App\Http\Controllers\V1\Plan\PlanController;
+use App\Http\Controllers\V1\Student\StudentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Symfony\Component\HttpFoundation\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,18 +22,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('students', StudentController::class);
-Route::apiResource('grades', GradeController::class);
-Route::get('grades/{grade}/plan/', [GradeController::class, 'plan']);
-Route::patch('/grades/{grade}/plan', [PlanController::class, 'update']);
+Route::prefix('v1')->group(function () {
+    Route::apiResource('students', StudentController::class);
 
-Route::post('/plan', [PlanController::class, 'store']);
-Route::delete('/plan', [PlanController::class, 'destroy']);
+    Route::apiResource('grades', GradeController::class);
+    Route::get('grades/{grade}/plan/', [GradeController::class, 'plan']);
 
-Route::get('/lectures/{lecture}', [LectureController::class, 'show']);
-Route::post('/lectures', [LectureController::class, 'store']);
-Route::patch('/lectures/{lecture}', [LectureController::class, 'update']);
-Route::delete('/lectures', [LectureController::class, 'destroy']);
+    Route::controller(PlanController::class)->group(function () {
+        Route::patch('/grades/{grade}/plan', 'update');
+        Route::post('/plan', 'store');
+        Route::delete('/plan', 'destroy');
+    });
 
-Route::resource('lectures', LectureController::class);
+    Route::apiResource('/lectures', LectureController::class);
+});
+
 
