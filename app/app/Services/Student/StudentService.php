@@ -21,24 +21,17 @@ class StudentService
      */
     public function save(StudentStoreRequest $request): array
     {
-        try {
-            $gradeId = $request->get('grade_id');
-            if ($gradeId) {
-                $grade = Grade::query()->where('id', $gradeId)->first();
-                if (!$grade) {
-                    throw new \Exception('Не существует выбранного класса');
-                }
+        $gradeId = $request->get('grade_id');
+        if ($gradeId) {
+            $grade = Grade::query()->where('id', $gradeId)->first();
+            if (!$grade) {
+                throw new \Exception('Не существует выбранного класса');
             }
-            $student = new Student();
-            $student->fill($request->all());
-            $student->save();
-            return $student->toArray();
-        } catch (\Exception $e) {
-            return [
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
         }
+        $student = new Student();
+        $student->fill($request->all());
+        $student->save();
+        return $student->toArray();
     }
 
     /**
@@ -70,18 +63,9 @@ class StudentService
      */
     public function update(StudentUpdateRequest $request, Student $student): array
     {
-        try {
-            if (isset($student->id)) {
-                $student->fill($request->all());
-                $student->save();
-                return $student->toArray();
-            }
-        } catch (\Exception $e) {
-            return [
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
-        }
+        $student->fill($request->all());
+        $student->save();
+        return $student->toArray();
     }
 
     /**
@@ -90,18 +74,10 @@ class StudentService
      */
     public function delete(Student $student): array
     {
-        try {
-            if (isset($student->id)) {
-                $student->delete();
-                return [
-                    'result' => true
-                ];
-            }
-        } catch (\Exception $e) {
+        if (isset($student->id)) {
+            $student->delete();
             return [
-                'result' => false,
-                'error' => true,
-                'message' => $e->getMessage()
+                'result' => true
             ];
         }
     }

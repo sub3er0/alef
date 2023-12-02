@@ -17,13 +17,19 @@ class GradesTableSeeder extends Seeder
     {
         DB::table('grades')->insert([
             [
+                'id' => 1,
                 'name' => 'Класс 1',
+                'plan_id' => 1
             ],
             [
+                'id' => 2,
                 'name' => 'Класс 2',
+                'plan_id' => 1
             ],
             [
+                'id' => 3,
                 'name' => 'Класс 3',
+                'plan_id' => 2
             ]
         ]);
     }

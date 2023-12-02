@@ -6,6 +6,7 @@ namespace App\Services\Plan;
 
 use App\Models\Grade;
 use App\Models\Plan;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * PlanService
@@ -14,17 +15,10 @@ class PlanService
 {
     /**
      * @param Grade $grade
-     * @return array|mixed[]|void
+     * @return Collection
      */
-    public function getLectures(Grade $grade): array
+    public function getLectures(Grade $grade): Collection
     {
-        try {
-            if ($grade->id) {
-                $lectures = Plan::query()->where('grade_id', $grade->id)->orderBy('priority')->get();
-                return $lectures->toArray();
-            }
-        } catch (\Exception $e) {
-            return ['error' => true, 'message' => $e->getMessage()];
-        }
+        return Grade::query()->find();
     }
 }

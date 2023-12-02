@@ -6,10 +6,9 @@ namespace App\Services\Grade;
 
 use App\Http\Requests\Grade\GradeStoreRequest;
 use App\Http\Requests\Grade\GradeUpdateRequest;
-use App\Http\Resources\GradeResource;
 use App\Models\Grade;
 use App\Models\Student;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 
 use function MongoDB\BSON\toJSON;
@@ -25,47 +24,32 @@ class GradeService
      */
     public function save(GradeStoreRequest $request): mixed
     {
-            $grade = new Grade();
-            $grade->fill($request->all());
-            $grade->save();
-            return $grade;
+        $grade = new Grade();
+        $grade->fill($request->all());
+        $grade->save();
+        return $grade;
     }
 
     /**
      * @param Grade $grade
-     * @return array
+     * @return Grade
      */
-    public function getGradeData(Grade $grade): array
+    public function getGradeData(Grade $grade): Grade
     {
-        try {
-            if ($grade->id) {
-                $gradeData = $grade->toArray();
-                $gradeData['students'] = $grade->students()->get()->toArray();
-                return $gradeData;
-            }
-            return ['error' => true, 'message' => 'Нет класса с заданным id'];
-        } catch (\Exception $e) {
-            return ['error' => true, 'message' => $e->getMessage()];
-        }
+        //$grade->stu = $grade->students()->get()
+        return $grade;
     }
 
     /**
      * @param GradeUpdateRequest $request
      * @param Grade $grade
-     * @return array
+     * @return JsonResource
      */
-    public function update(GradeUpdateRequest $request, Grade $grade): array
+    public function update(GradeUpdateRequest $request, Grade $grade): Grade
     {
-        try {
-            if (isset($grade->id)) {
-                $grade->fill($request->all());
-                $grade->save();
-                return $grade->toArray();
-            }
-            return ['error' => true, 'message' => 'Нет класса с заданным id'];
-        } catch (\Exception $e) {
-            return ['error' => true, 'message' => $e->getMessage()];
-        }
+        $grade->fill($request->all());
+        $grade->save();
+        return $grade;
     }
 
     /**
@@ -74,30 +58,18 @@ class GradeService
      */
     public function delete(Grade $grade): array
     {
-        try {
-            if (isset($grade->id)) {
-                DB::transaction(function() use ($grade){
-                    DB::table('plans')->where('grade_id', $grade->id)->delete();
-                    $students = $grade->students()->get();
-                    /** @var Student $student */
-                    foreach ($students as $student) {
-                        $student->grade_id = null;
-                        $student->save();
-                    }
-                    $grade->withoutRelations()->delete();
-                }
-                );
-                return [
-                    'result' => true
-                ];
+        DB::transaction(function() use ($grade){
+            $students = $grade->students()->get();
+            /** @var Student $student */
+            foreach ($students as $student) {
+                $student->grade_id = null;
+                $student->save();
             }
-            return ['error' => true, 'message' => 'Нет класса с заданным id'];
-        } catch (\Exception $e) {
-            return [
-                'result' => false,
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
+            $grade->withoutRelations()->delete();
         }
+        );
+        return [
+            'result' => true
+        ];
     }
 }

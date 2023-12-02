@@ -17,21 +17,25 @@ class StudentsTableSeeder extends Seeder
     {
         DB::table('students')->insert([
             [
+                'id' => 1,
                 'name' => 'Студент 1',
                 'email' => 'student1@mail.ru',
                 'grade_id' => '1',
             ],
             [
+                'id' => 2,
                 'name' => 'Студент 2',
                 'email' => 'student2@mail.ru',
                 'grade_id' => '1',
             ],
             [
+                'id' => 3,
                 'name' => 'Студент 3',
                 'email' => 'student3@mail.ru',
                 'grade_id' => '1',
             ],
             [
+                'id' => 4,
                 'name' => 'Студент 4',
                 'email' => 'student4@mail.ru',
                 'grade_id' => '2',

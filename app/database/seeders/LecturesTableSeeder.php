@@ -17,14 +17,17 @@ class LecturesTableSeeder extends Seeder
     {
         DB::table('lectures')->insert([
             [
+                'id' => 1,
                 'topic' => 'Тема 1',
                 'description' => 'Описание 1',
             ],
             [
+                'id' => 2,
                 'topic' => 'Тема 2',
                 'description' => 'Описание 2',
             ],
             [
+                'id' => 3,
                 'topic' => 'Тема 3',
                 'description' => 'Описание 3',
             ]

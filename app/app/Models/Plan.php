@@ -14,8 +14,14 @@ class Plan extends Model
         'lecture_id',
         'priority'
     ];
+
     public function grade()
     {
         return $this->belongsTo('App\Models\Grade');
+    }
+
+    public function lectures()
+    {
+        return $this->belongsToMany(Lecture::class, 'plan_lectures', 'plan_id', 'lecture_id');
     }
 }

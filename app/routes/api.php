@@ -30,7 +30,7 @@ Route::prefix('v1')->group(function () {
 
     Route::controller(PlanController::class)->group(function () {
         Route::patch('/grades/{grade}/plan', 'update');
-        Route::post('/plan', 'store');
+        Route::post('/plan/grade/{grade}', 'store');
         Route::delete('/plan', 'destroy');
     });
 

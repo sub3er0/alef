@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers\V1\Plan;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PlanResource;
 use App\Models\Grade;
 use App\Models\Plan;
+use App\Models\PlanLecture;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
+use Matrix\Exception;
 
 /**
  * PlanController
@@ -19,24 +23,30 @@ class PlanController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return array
+     * @return JsonResource
      */
-    public function store(Request $request): array
+    public function store(Request $request, Grade $grade): JsonResource
     {
-        try {
-            $planData = $request->get('plan');
-            foreach ($planData as $row) {
-                $plan = new Plan();
-                $plan->fill($row);
-                $plan->save();
-            }
-            return $planData;
-        } catch (\Exception $e) {
-            return [
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
+        if ($grade->plan()->exists()) {
+            throw new Exception('Учебный план уже создан для данного класса');
         }
+        $planData = $request->get('plan');
+        $name = $request->get('name');
+        $plan = new Plan();
+        DB::transaction(function() use ($planData, $grade, $plan, $name) {
+            $plan->name = $name;
+            $plan->save();
+            foreach ($planData as $row) {
+                $planLecture = new PlanLecture();
+                $row['plan_id'] = $plan->id;
+                $planLecture->fill($row);
+                $planLecture->save();
+            }
+            $grade->plan_id = $plan->id;
+            $grade->save();
+        });
+
+        return new PlanResource($plan);
     }
 
     /**
@@ -44,30 +54,31 @@ class PlanController extends Controller
      *
      * @param Request $request
      * @param Grade $grade
-     * @return array
+     * @return PlanResource
      */
-    public function update(Request $request, Grade $grade): array
+    public function update(Request $request, Grade $grade): PlanResource
     {
-        try {
-            if (isset($grade->id)) {
-                DB::transaction(function () use ($grade, $request) {
-                    DB::table('plans')->where('grade_id', $grade->id)->delete();
-                    $planData = $request->get('plan');
-                    foreach ($planData as $row) {
-                        $plan = new Plan();
-                        $plan->fill($row);
-                        $plan->save();
-                    }
-                }
-                );
-                return $request->get('plan');
-            }
-            return ['error' => true, 'message' => 'Нет класса с заданным id'];
-        } catch (\Exception $e) {
-            return [
-                'error' => true,
-                'message' => $e->getMessage()
-            ];
+        $planData = $request->get('plan');
+        $name = $request->get('name');
+        if (!$grade->plan()->exists()) {
+            $plan = new Plan();
+        } else {
+            $plan = $grade->plan;
         }
+        DB::transaction(function() use ($planData, $grade, $name, $plan) {
+
+            $plan->name = $name;
+            PlanLecture::where('plan_id', $grade->plan->id)->delete();
+            foreach ($planData as $row) {
+                $planLecture = new PlanLecture();
+                $row['plan_id'] = $grade->plan->id;
+                $planLecture->fill($row);
+                $planLecture->save();
+            }
+            $grade->plan_id = $plan->id;
+            $grade->save();
+        });
+
+        return new PlanResource($plan);
     }
 }

@@ -13,13 +13,7 @@ return new class extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('grade_id');
-            $table->unsignedBigInteger('lecture_id');
-            $table->foreign('grade_id')->references('id')->on('grades');
-            $table->foreign('lecture_id')->references('id')->on('lectures');
-            $table->integer('priority');
-            $table->unique(['grade_id', 'lecture_id']);
-            $table->unique(['grade_id', 'priority']);
+            $table->string('name');
             $table->timestamps();
         });
     }

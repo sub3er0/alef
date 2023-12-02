@@ -8,24 +8,26 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Grade\GradeStoreRequest;
 use App\Http\Requests\Grade\GradeUpdateRequest;
 use App\Http\Resources\GradeResource;
+use App\Http\Resources\PlanResource;
 use App\Services\Grade\GradeService;
 use App\Services\Plan\PlanService;
 use App\Models\Grade;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class GradeController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return array
+     * @return ResourceCollection
      */
-    public function index(Request $request): array
+    public function index(Request $request): ResourceCollection
     {
         $page = $request->input('page', 0);
         $limit = $request->input('limit', 10);
-        $students = Grade::all()->forPage($page, $limit);
-        return $students->toArray();
+        return GradeResource::collection(Grade::all()->forPage($page, $limit));
     }
 
 
@@ -34,9 +36,9 @@ class GradeController extends Controller
      *
      * @param GradeStoreRequest $request
      * @param GradeService $service
-     * @return mixed
+     * @return JsonResource
      */
-    public function store(GradeStoreRequest $request, GradeService $service): mixed
+    public function store(GradeStoreRequest $request, GradeService $service): JsonResource
     {
         return new GradeResource($service->save($request));
     }
@@ -49,9 +51,9 @@ class GradeController extends Controller
      * @param GradeService $service
      * @return array
      */
-    public function show(Grade $grade, GradeService $service): array
+    public function show(Grade $grade, GradeService $service): JsonResource
     {
-        return $service->getGradeData($grade);
+        return new GradeResource($service->getGradeData($grade));
     }
 
     /**
@@ -59,11 +61,11 @@ class GradeController extends Controller
      *
      * @param Grade $grade
      * @param PlanService $service
-     * @return array
+     * @return JsonResource
      */
-    public function plan(Grade $grade, PlanService $service): array
+    public function plan(Grade $grade, PlanService $service)
     {
-        return $service->getLectures($grade);
+        return new PlanResource($grade->plan);
     }
 
 
@@ -73,11 +75,11 @@ class GradeController extends Controller
      * @param GradeUpdateRequest $request
      * @param Grade $grade
      * @param GradeService $service
-     * @return array
+     * @return JsonResource
      */
-    public function update(GradeUpdateRequest $request, Grade $grade, GradeService $service): array
+    public function update(GradeUpdateRequest $request, Grade $grade, GradeService $service): JsonResource
     {
-        return $service->update($request, $grade);
+        return new GradeResource($service->update($request, $grade));
     }
 
 

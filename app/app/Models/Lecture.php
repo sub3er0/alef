@@ -15,6 +15,6 @@ class Lecture extends Model
 
     public function grade()
     {
-        return $this->belongsToMany(Grade::class, 'plans', 'lecture_id', 'grade_id');
+        return $this->belongsToMany(Grade::class, 'plan_lectures', 'lecture_id', 'grade_id');
     }
 }

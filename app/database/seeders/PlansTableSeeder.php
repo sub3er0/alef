@@ -14,29 +14,12 @@ class PlansTableSeeder extends Seeder
     {
         DB::table('plans')->insert([
             [
-                'grade_1' => '1',
-                'lecture_1' => '1',
-                'priority' => '1',
+                'id' => 1,
+                'name' => 'План 1'
             ],
             [
-                'grade_1' => '1',
-                'lecture_1' => '2',
-                'priority' => '2',
-            ],
-            [
-                'grade_1' => '1',
-                'lecture_1' => '3',
-                'priority' => '3',
-            ],
-            [
-                'grade_1' => '2',
-                'lecture_1' => '1',
-                'priority' => '2',
-            ],
-            [
-                'grade_1' => '2',
-                'lecture_1' => '2',
-                'priority' => '1',
+                'id' => 2,
+                'name' => 'План 2'
             ],
         ]);
     }

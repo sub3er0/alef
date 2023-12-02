@@ -20,11 +20,6 @@ class Grade extends Model
 
     public function plan()
     {
-        return $this->hasOne('App\Models\Plan');
-    }
-
-    public function lecture()
-    {
-        return $this->belongsToMany(Lecture::class, 'plans', 'grade_id', 'lecture_id');
+        return $this->hasOne('App\Models\Plan', 'id', 'plan_id');
     }
 }

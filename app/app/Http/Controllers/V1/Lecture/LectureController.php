@@ -7,9 +7,12 @@ namespace App\Http\Controllers\V1\Lecture;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Lecture\LectureStoreRequest;
 use App\Http\Requests\Lecture\LectureUpdateRequest;
+use App\Http\Resources\LectureResource;
 use App\Services\Lecture\LectureService;
 use App\Models\Lecture;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 /**
  * LectureController
@@ -20,14 +23,13 @@ class LectureController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return array
+     * @return ResourceCollection
      */
-    public function index(Request $request): array
+    public function index(Request $request): ResourceCollection
     {
         $page = $request->input('page', 0);
         $limit = $request->input('limit', 10);
-        $lectures = Lecture::all()->forPage($page, $limit);
-        return $lectures->toArray();
+        return LectureResource::collection(Lecture::all()->forPage($page, $limit));
     }
 
     /**
@@ -35,11 +37,11 @@ class LectureController extends Controller
      *
      * @param LectureStoreRequest $request
      * @param LectureService $service
-     * @return array
+     * @return JsonResource
      */
-    public function store(LectureStoreRequest $request, LectureService $service): array
+    public function store(LectureStoreRequest $request, LectureService $service): JsonResource
     {
-        return $service->save($request);
+        return new LectureResource($service->save($request));
     }
 
     /**
@@ -47,11 +49,11 @@ class LectureController extends Controller
      *
      * @param Lecture $lecture
      * @param LectureService $service
-     * @return array
+     * @return JsonResource
      */
-    public function show(Lecture $lecture, LectureService $service): array
+    public function show(Lecture $lecture, LectureService $service): JsonResource
     {
-        return $service->getLectureData($lecture);
+        return new LectureResource($service->getLectureData($lecture));
     }
 
     /**
@@ -62,9 +64,9 @@ class LectureController extends Controller
      * @param LectureService $service
      * @return array
      */
-    public function update(LectureUpdateRequest $request, Lecture $lecture, LectureService $service): array
+    public function update(LectureUpdateRequest $request, Lecture $lecture, LectureService $service): JsonResource
     {
-        return $service->update($request, $lecture);
+        return new LectureResource($service->update($request, $lecture));
     }
 
     /**
