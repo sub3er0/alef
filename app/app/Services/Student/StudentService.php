@@ -31,7 +31,7 @@ class StudentService
         $student = new Student();
         $student->fill($request->all());
         $student->save();
-        return $student->toArray();
+        return $student;
     }
 
     /**
@@ -59,13 +59,13 @@ class StudentService
     /**
      * @param StudentUpdateRequest $request
      * @param Student $student
-     * @return array|void
+     * @return Student
      */
-    public function update(StudentUpdateRequest $request, Student $student): array
+    public function update(StudentUpdateRequest $request, Student $student): Student
     {
         $student->fill($request->all());
         $student->save();
-        return $student->toArray();
+        return $student;
     }
 
     /**
